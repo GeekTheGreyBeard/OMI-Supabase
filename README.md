@@ -532,6 +532,12 @@ docker compose -f docker-compose.test-postgres.yml down -v
 
 ---
 
+## Acknowledgments
+
+Thanks to [James Bubenik](https://github.com/jamesbubenik) for the idea of adding a standalone installer, which made this POC easier to evaluate and self-host from a fresh clone.
+
+---
+
 ## License
 
 This project is released under the [MIT License](LICENSE).
