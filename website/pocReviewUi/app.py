@@ -384,6 +384,7 @@ def restore_memory_from_trash(memory_id, actor):
 
 def layout(title, body, notice=""):
     nav = """
+      <a class='btn secondary' href='/memory/home'>Home</a>
       <a class='btn secondary' href='/review'>Review Queue</a>
       <a class='btn secondary' href='/memories'>Primary Memories</a>
       <a class='btn secondary' href='/omi/pull'>Retrieve from Omi</a>
@@ -423,7 +424,7 @@ input[type=checkbox] {{ width:auto; }} .two {{ display:grid; grid-template-colum
 <script>
 function toggleAll(source) {{ document.querySelectorAll('input[name="candidate_ids"]').forEach(cb => cb.checked = source.checked); }}
 </script>
-</head><body><div class='wrap'><div class='hero'><div><div class='brand'><span>Personal Memory Hub</span></div><div class='sub'>POC review cockpit · evidence → candidate → approved memory</div></div><div class='nav'>{nav}</div></div>{f"<div class='notice'>{esc(notice)}</div>" if notice else ""}{body}</div></body></html>"""
+</head><body><div class='wrap'><div class='hero'><div><div class='brand'><span>Personal Memory Hub</span></div><div class='sub'>Omi-centered review cockpit · evidence → candidate → approved memory</div></div><div class='nav'>{nav}</div></div>{f"<div class='notice'>{esc(notice)}</div>" if notice else ""}{body}</div></body></html>"""
 
 
 @app.get('/health')
@@ -431,9 +432,38 @@ def health():
     return {"ok": True}
 
 
+def omi_home_body():
+    summary = {r['bucket']: r['count'] for r in q("select bucket, count from pmh.memory_status_summary order by bucket")}
+    pending = summary.get('new', 0) + summary.get('needs_review', 0) + summary.get('edited', 0)
+    active = summary.get('approved', 0) + summary.get('active', 0)
+    queued = one("select count(*) as c from pmh.sync_jobs where status in ('queued','pending','ready')") or {'c': 0}
+    trash = one("select count(*) as c from pmh.approved_memories where lifecycle_status='deleted'") or {'c': 0}
+    return f'''
+    <section class='card' style='padding:28px; margin-bottom:20px'>
+      <div class='label'>Omi Memory Management</div>
+      <h1 style='margin-top:8px'>Omi <span style='background:linear-gradient(90deg,var(--accent2),#d6c7ff,var(--accent)); -webkit-background-clip:text; color:transparent'>Memory Cockpit</span></h1>
+      <p class='muted' style='font-size:18px; max-width:780px'>A focused starting point for reviewing Omi-derived memory evidence, approving durable memories, creating new Omi-bound memories, and watching submission/sync activity.</p>
+      <div class='actions'>
+        <a class='btn' href='/review'>Review candidates</a>
+        <a class='btn secondary' href='/memories'>Primary memories</a>
+        <a class='btn secondary' href='/omi/pull'>Retrieve from Omi</a>
+      </div>
+    </section>
+    <section class='grid'>
+      <a class='card' href='/review'><div class='metric'>{esc(pending)}</div><div class='label'>Candidates needing review</div><p class='muted'>Approve, edit, reject, or tune Omi-derived memory candidates before recall.</p></a>
+      <a class='card' href='/memories'><div class='metric'>{esc(active)}</div><div class='label'>Primary memories</div><p class='muted'>Browse approved durable memory and submit corrected records back to Omi.</p></a>
+      <a class='card' href='/memory/new'><div class='metric'>+</div><div class='label'>New Omi memory</div><p class='muted'>Create a reviewed memory manually and queue it for Omi submission.</p></a>
+      <a class='card' href='/submissions'><div class='metric'>{esc(queued['c'])}</div><div class='label'>Queued submissions</div><p class='muted'>Inspect Omi sync jobs and retry or review pending submissions.</p></a>
+      <a class='card' href='/trash'><div class='metric'>{esc(trash['c'])}</div><div class='label'>Trash bin</div><p class='muted'>Restore memories that were removed in error.</p></a>
+    </section>
+    '''
+
+
 @app.get('/', response_class=HTMLResponse)
+@app.get('/home', response_class=HTMLResponse)
+@app.get('/memory/home', response_class=HTMLResponse)
 def root(user=Depends(auth)):
-    return RedirectResponse('/review', status_code=302)
+    return layout('Omi Memory Cockpit', omi_home_body())
 
 
 @app.get('/review', response_class=HTMLResponse)
