@@ -12,6 +12,41 @@ The project is designed so Omi captures are treated as *evidence*, not automatic
 
 ---
 
+## Screenshots
+
+### Review queue
+
+![OMI-Supabase review queue](docs/assets/screenshots/review-queue.png)
+
+### Create a new memory
+
+![OMI-Supabase new memory form](docs/assets/screenshots/new-memory.png)
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Omi[Omi pendant / Omi API] -->|webhooks| N8N[n8n workflows]
+  Omi -->|Developer API pull| UI[FastAPI review UI]
+  N8N -->|raw events| DB[(Postgres / Supabase schema)]
+  DB -->|unreviewed candidates| UI
+  UI -->|approve / edit / trash / restore| DB
+  UI -->|create replacement memory| Omi
+  UI -->|delete superseded or trashed memory| Omi
+
+  subgraph PMH[Personal Memory Hub schema]
+    DB --> Raw[pmh.raw_events]
+    DB --> Candidates[pmh.memory_candidates]
+    DB --> Approved[pmh.approved_memories]
+    DB --> Sync[pmh.sync_jobs]
+    DB --> Audit[pmh.review_actions / audit]
+  end
+```
+
+---
+
 ## What this system does
 
 ### Ingest Omi data
@@ -375,6 +410,12 @@ For production, automate backups and test restores regularly.
 ---
 
 ## Development notes
+
+### README screenshots and diagrams
+
+Project screenshots should live under `docs/assets/screenshots/` and be referenced with relative Markdown image paths. Mermaid diagrams can be embedded directly in Markdown using fenced `mermaid` blocks, as shown above.
+
+For repeatable screenshots, use a clean local/disposable database so screenshots do not expose private memory data.
 
 Run static validation:
 
