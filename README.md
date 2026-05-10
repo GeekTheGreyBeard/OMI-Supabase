@@ -26,3 +26,12 @@ This project was split out of PatriciAI `personalMemoryHub` so the Supabase/Omi 
 - No real secrets are committed. Use `.env.example` as a template.
 - Website requires Basic Auth.
 - Review actions remain behind the authenticated website, not public webhook flows.
+
+## GitHub status
+
+Local repository is initialized and committed. GitHub private repo creation was attempted, but the current PatriciAI GitHub PAT lacks repository creation permission (`createRepository` blocked). Once `GeekTheGreyBeard/OMI-Supabase` exists or a PAT with create-repo permission is available, push with:
+
+```bash
+git remote add origin https://github.com/GeekTheGreyBeard/OMI-Supabase.git
+git push -u origin main
+```
