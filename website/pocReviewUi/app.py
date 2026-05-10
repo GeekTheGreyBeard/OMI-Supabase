@@ -447,6 +447,7 @@ def omi_home_body():
         <a class='btn' href='/review'>Review candidates</a>
         <a class='btn secondary' href='/memories'>Primary memories</a>
         <a class='btn secondary' href='/omi/pull'>Retrieve from Omi</a>
+        <a class='btn secondary' href='http://patriciai-ui.gtgb.io/'>Back to PatriciAI Home</a>
       </div>
     </section>
     <section class='grid'>
