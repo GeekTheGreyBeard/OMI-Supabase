@@ -1,0 +1,82 @@
+{
+  "id": "fsRCaO5aeJX0XuAF",
+  "name": "OMI-Supabase - PMH Candidate Extractor POC",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -460,
+        0
+      ],
+      "id": "9969ce45-3b0c-4108-aadd-5cb030e065ac",
+      "name": "Every 5 Minutes"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "with src as (\n  select r.*\n  from pmh.raw_events r\n  where r.ingest_status = 'received'\n    and r.event_type in ('omi.conversation_event', 'omi.day_summary')\n    and coalesce(r.external_user_id, '') <> 'synthetic-user'\n    and not exists (\n      select 1 from pmh.memory_candidates c where c.raw_event_id = r.raw_event_id\n    )\n  order by r.received_at asc\n  limit 25\n), shaped as (\n  select\n    raw_event_id,\n    source_system_id,\n    tenant_id,\n    persona_id,\n    event_type,\n    case\n      when event_type = 'omi.day_summary' then coalesce(payload #>> '{body,title}', 'Omi day summary ' || coalesce(payload #>> '{body,date}', received_at::date::text))\n      else coalesce(payload #>> '{body,structured,title}', payload #>> '{body,title}', payload #>> '{body,id}', 'Omi memory candidate')\n    end as proposed_title,\n    case\n      when event_type = 'omi.day_summary' then coalesce(payload #>> '{body,summary}', payload #>> '{body,overview}', payload #>> '{body,text}', left(payload::text, 1200))\n      else coalesce(payload #>> '{body,structured,overview}', payload #>> '{body,summary}', payload #>> '{body,text}', payload #>> '{body,structured,title}', left(payload::text, 1200))\n    end as proposed_content,\n    case\n      when event_type = 'omi.day_summary' then 'day_summary'\n      else coalesce(payload #>> '{body,structured,category}', 'omi_conversation')\n    end as proposed_category,\n    case when event_type = 'omi.day_summary' then 0.650::numeric else 0.700::numeric end as confidence,\n    jsonb_build_object(\n      'raw_event_id', raw_event_id,\n      'event_type', event_type,\n      'source', 'omi',\n      'external_user_id', external_user_id,\n      'external_event_id', external_event_id,\n      'external_conversation_id', external_conversation_id,\n      'payload_kind', payload ->> 'kind',\n      'received_at', received_at\n    ) as evidence\n  from src\n), inserted as (\n  insert into pmh.memory_candidates (\n    tenant_id,\n    persona_id,\n    source_system_id,\n    raw_event_id,\n    proposed_title,\n    proposed_content,\n    proposed_category,\n    proposed_tags,\n    confidence,\n    sensitivity,\n    review_status,\n    recall_eligible,\n    sync_to_source,\n    evidence\n  )\n  select\n    tenant_id,\n    persona_id,\n    source_system_id,\n    raw_event_id,\n    proposed_title,\n    proposed_content,\n    proposed_category,\n    array[event_type, 'omi', 'poc_extractor'],\n    confidence,\n    'normal',\n    'needs_review',\n    false,\n    false,\n    evidence\n  from shaped\n  where nullif(trim(proposed_content), '') is not null\n  returning candidate_id, raw_event_id\n), updated as (\n  update pmh.raw_events r\n  set ingest_status = 'candidate_created'\n  from inserted i\n  where r.raw_event_id = i.raw_event_id\n  returning r.raw_event_id\n)\nselect\n  (select count(*) from src) as raw_events_seen,\n  (select count(*) from inserted) as candidates_created,\n  (select count(*) from updated) as raw_events_marked_candidate_created;\n",
+        "options": {
+          "queryBatching": "single"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -180,
+        0
+      ],
+      "id": "ccc7ec2f-4afc-404e-863e-97bff3754eaa",
+      "name": "Create Review Candidates",
+      "credentials": {
+        "postgres": {
+          "id": "6KOtcyLklzrEtDiv",
+          "name": "Supabase via Postgres account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Create Review Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "HsH8jyIcCwrMIXUY"
+  },
+  "staticData": {
+    "node:Every 5 Minutes": {
+      "recurrenceRules": []
+    }
+  },
+  "pinData": {},
+  "versionId": "d946878f-4767-4df5-862c-272c03108994",
+  "triggerCount": 1,
+  "meta": null,
+  "createdAt": "2026-05-10 15:17:19.743",
+  "updatedAt": "2026-05-10 15:17:20.543",
+  "description": null
+}

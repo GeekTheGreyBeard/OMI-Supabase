@@ -1,0 +1,9 @@
+services:
+  omi-supabase-web:
+    build: ./pocReviewUi
+    container_name: omi-supabase-web
+    env_file:
+      - ./pocReviewUi/.env
+    ports:
+      - "8097:8097"
+    restart: unless-stopped

@@ -1,0 +1,140 @@
+{
+  "id": "4e9DqWBqxjuY8PXO",
+  "name": "OMI-Supabase - PMH Omi Raw Intake",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pmh/omi/raw-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -740,
+        0
+      ],
+      "id": "6f8a9f25-1111-4a70-9c94-59a4e2af7001",
+      "name": "Omi Webhook Intake",
+      "webhookId": "349103f4-3094-422c-9462-af9bb8f19879"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json || {};\nconst payload = input.body ?? input;\nconst headers = input.headers ?? {};\nconst stable = JSON.stringify(payload, Object.keys(payload).sort());\nfunction fnv1a64(str) {\n  let h1 = 0xdeadbeef ^ str.length;\n  let h2 = 0x41c6ce57 ^ str.length;\n  for (let i = 0, ch; i < str.length; i++) {\n    ch = str.charCodeAt(i);\n    h1 = Math.imul(h1 ^ ch, 2654435761);\n    h2 = Math.imul(h2 ^ ch, 1597334677);\n  }\n  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);\n  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);\n  return ((h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0'));\n}\nconst payloadHash = 'jsfnv64:' + fnv1a64(stable);\nfunction first(...vals) { return vals.find(v => v !== undefined && v !== null && String(v).length > 0) ?? null; }\nconst externalEventId = first(payload.event_id, payload.eventId, payload.id, payload.uid);\nconst externalConversationId = first(payload.conversation_id, payload.conversationId, payload.conversation?.id, payload.session_id);\nconst externalMemoryId = first(payload.memory_id, payload.memoryId, payload.memory?.id);\nconst eventType = first(payload.event_type, payload.type, payload.trigger, 'omi.webhook');\nreturn [{ json: {\n  source_system_id: 'b56c1844-4a3c-48dd-ba39-eedf33fdeb7f',\n  external_user_id: first(payload.user_id, payload.userId, payload.uid),\n  external_event_id: externalEventId,\n  external_conversation_id: externalConversationId,\n  external_memory_id: externalMemoryId,\n  event_type: eventType,\n  event_timestamp: first(payload.created_at, payload.createdAt, payload.started_at, payload.timestamp),\n  idempotency_key: externalEventId || externalMemoryId || externalConversationId || payloadHash,\n  payload_hash: payloadHash,\n  payload,\n  headers,\n  ingest_status: 'received'\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "6f8a9f25-2222-4a70-9c94-59a4e2af7002",
+      "name": "Normalize Raw Omi Event"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "mode": "name",
+          "value": "pmh"
+        },
+        "table": {
+          "mode": "name",
+          "value": "raw_events"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "skipOnConflict": true
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -220,
+        0
+      ],
+      "id": "6f8a9f25-3333-4a70-9c94-59a4e2af7003",
+      "name": "Insert Raw Event",
+      "credentials": {
+        "postgres": {
+          "id": "6KOtcyLklzrEtDiv",
+          "name": "Supabase via Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, workflow: 'pmh-omi-raw-intake', rawEventId: $json.raw_event_id || null, status: $json.ingest_status || 'received' } }}",
+        "options": {
+          "responseCode": 202
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        40,
+        0
+      ],
+      "id": "6f8a9f25-4444-4a70-9c94-59a4e2af7004",
+      "name": "Accepted Response"
+    }
+  ],
+  "connections": {
+    "Omi Webhook Intake": {
+      "main": [
+        [
+          {
+            "node": "Normalize Raw Omi Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Raw Omi Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Raw Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Raw Event": {
+      "main": [
+        [
+          {
+            "node": "Accepted Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "HsH8jyIcCwrMIXUY"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "f1a5339a-cf1a-482e-92ec-15d2c5de923b",
+  "triggerCount": 1,
+  "meta": null,
+  "createdAt": "2026-05-10 14:50:36.437",
+  "updatedAt": "2026-05-10 14:52:04.102",
+  "description": null
+}

@@ -1,0 +1,212 @@
+{
+  "id": "t3ccpiv6c1vrZJum",
+  "name": "OMI-Supabase - PMH Omi Audio Bytes",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pmh/omi/audio-bytes",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true,
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -740,
+        0
+      ],
+      "id": "ebe15823-d43f-41e3-b866-15bc4b726816",
+      "name": "Omi Webhook Intake",
+      "webhookId": "009512fe-f886-437d-96cf-76cc47d4a14e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json || {};\nconst inboundBody = input.body ?? input;\nconst headers = input.headers ?? {};\nconst query = input.query ?? {};\nconst params = input.params ?? {};\nconst binaryKeys = $binary ? Object.keys($binary) : [];\nconst binaryMeta = {};\nfor (const key of binaryKeys) {\n  const b = $binary[key] || {};\n  binaryMeta[key] = { mimeType: b.mimeType, fileName: b.fileName, fileExtension: b.fileExtension, fileSize: b.fileSize };\n}\nfunction canonical(value) {\n  if (Array.isArray(value)) return value.map(canonical);\n  if (value && typeof value === 'object') {\n    const out = {};\n    for (const k of Object.keys(value).sort()) out[k] = canonical(value[k]);\n    return out;\n  }\n  return value;\n}\nfunction fnv1a64(str) {\n  let h1 = 0xdeadbeef ^ str.length;\n  let h2 = 0x41c6ce57 ^ str.length;\n  for (let i = 0, ch; i < str.length; i++) {\n    ch = str.charCodeAt(i);\n    h1 = Math.imul(h1 ^ ch, 2654435761);\n    h2 = Math.imul(h2 ^ ch, 1597334677);\n  }\n  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);\n  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);\n  return ((h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0'));\n}\nfunction first(...vals) { return vals.find(v => v !== undefined && v !== null && String(v).length > 0) ?? null; }\nconst bodyObject = Array.isArray(inboundBody) ? { items: inboundBody } : (inboundBody && typeof inboundBody === 'object' ? inboundBody : { value: inboundBody });\nconst payloadForStorage = true\n  ? { kind: 'audio_bytes_metadata', query, params, binaryMeta, note: 'Raw audio bytes intentionally not stored in Postgres by PMH intake.' }\n  : { kind: 'omi.audio_bytes', body: bodyObject, query, params };\nconst stable = JSON.stringify(canonical({ payload: payloadForStorage, query, params, binaryMeta }));\nconst payloadHash = 'jsfnv64:' + fnv1a64(stable);\nconst payload = bodyObject;\nconst externalEventId = first(payload.event_id, payload.eventId, payload.id, payload.uid, query.event_id, query.session_id);\nconst externalConversationId = first(payload.conversation_id, payload.conversationId, payload.conversation?.id, payload.session_id, query.session_id);\nconst externalMemoryId = first(payload.memory_id, payload.memoryId, payload.memory?.id);\nconst eventTs = first(payload.created_at, payload.createdAt, payload.started_at, payload.timestamp);\nreturn [{ json: {\n  source_system_id: 'b56c1844-4a3c-48dd-ba39-eedf33fdeb7f',\n  external_user_id: first(payload.user_id, payload.userId, payload.uid, query.uid),\n  external_event_id: externalEventId,\n  external_conversation_id: externalConversationId,\n  external_memory_id: externalMemoryId,\n  event_type: 'omi.audio_bytes',\n  event_timestamp: eventTs,\n  idempotency_key: externalEventId || externalMemoryId || externalConversationId || payloadHash,\n  payload_hash: payloadHash,\n  payload: payloadForStorage,\n  headers,\n  ingest_status: 'received'\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "d8e73a1b-ed08-4ef3-b022-1fab096c9e0a",
+      "name": "Normalize Typed Omi Event"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "mode": "name",
+          "value": "pmh"
+        },
+        "table": {
+          "mode": "name",
+          "value": "raw_events"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "skipOnConflict": true
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -220,
+        0
+      ],
+      "id": "8c34d127-f1a5-41cf-a318-148b1899dc6d",
+      "name": "Insert Raw Event",
+      "credentials": {
+        "postgres": {
+          "id": "6KOtcyLklzrEtDiv",
+          "name": "Supabase via Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, workflow: $workflow.name, rawEventId: $json.raw_event_id || null, status: $json.ingest_status || 'received' } }}",
+        "options": {
+          "responseCode": 202
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        460,
+        0
+      ],
+      "id": "77a580ab-f196-489e-99d8-5b06b76bfb53",
+      "name": "Accepted Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $json;\nconst payload = r.payload || {};\nconst q = payload.query || {};\nconst h = r.headers || {};\nfunction num(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }\nreturn [{ json: {\n  source_system_id: r.source_system_id,\n  raw_event_id: r.raw_event_id,\n  external_user_id: r.external_user_id,\n  external_conversation_id: r.external_conversation_id,\n  external_event_id: r.external_event_id,\n  sample_rate: num(q.sample_rate),\n  segment_seconds: num(q.seconds || q.segment_seconds || q.duration),\n  content_type: h['content-type'] || h['Content-Type'] || 'application/octet-stream',\n  encoding: 'pcm16le',\n  size_bytes: num(h['content-length'] || h['Content-Length']),\n  retention_policy: 'metadata_only',\n  meta: { query: q, binaryMeta: payload.binaryMeta || {}, note: 'Raw audio bytes not retained by PMH n8n intake.' }\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "53b289e2-e1ef-48dd-a279-809377699e4c",
+      "name": "Map Audio Segment Metadata"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "mode": "name",
+          "value": "pmh"
+        },
+        "table": {
+          "mode": "name",
+          "value": "audio_segments"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "bfe22df1-ee06-4b28-a470-07bc5441d622",
+      "name": "Insert Audio Segment Metadata",
+      "credentials": {
+        "postgres": {
+          "id": "6KOtcyLklzrEtDiv",
+          "name": "Supabase via Postgres account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Omi Webhook Intake": {
+      "main": [
+        [
+          {
+            "node": "Normalize Typed Omi Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Typed Omi Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Raw Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Raw Event": {
+      "main": [
+        [
+          {
+            "node": "Map Audio Segment Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Audio Segment Metadata": {
+      "main": [
+        [
+          {
+            "node": "Insert Audio Segment Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Audio Segment Metadata": {
+      "main": [
+        [
+          {
+            "node": "Accepted Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "HsH8jyIcCwrMIXUY"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "67020b6f-07e5-433f-80e4-188fa5106409",
+  "triggerCount": 1,
+  "meta": null,
+  "createdAt": "2026-05-10 15:01:46.758",
+  "updatedAt": "2026-05-10 15:16:29.869",
+  "description": null
+}
