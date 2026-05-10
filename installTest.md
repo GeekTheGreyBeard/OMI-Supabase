@@ -1,271 +1,193 @@
-# OMI-Supabase Installer Test
+# OMI-Supabase install test
+
+- Test host: omi-supabase-install-test
+- Test started: 2026-05-10T23:04:50+00:00
+- Repository: https://github.com/GeekTheGreyBeard/OMI-Supabase.git
+- Branch: main
+
+Cloning into '/home/gtgb/omi-supabase-retest-20260510/OMI-Supabase'...
+- Commit: 3a94b8b Add Omi memory cockpit home page
+
+## Static validation
+
+workflow_exports_ok 6
+package_validation_ok
+- PASS: static package validation
+
+## Install
+
+Created /home/gtgb/omi-supabase-retest-20260510/OMI-Supabase/website/pocReviewUi/.env
+Note: OMI_API_KEY is blank. Add it to /home/gtgb/omi-supabase-retest-20260510/OMI-Supabase/website/pocReviewUi/.env before using Omi API submit/retrieve features.
+ Network omi-supabase_default  Creating
+ Network omi-supabase_default  Created
+ Container omi-supabase-test-db  Creating
+ Container omi-supabase-test-db  Created
+ Container omi-supabase-test-db  Starting
+ Container omi-supabase-test-db  Started
+Waiting for Postgres...
+Applying database schema...
+CREATE EXTENSION
+CREATE SCHEMA
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+INSERT 0 5
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE TABLE
+CREATE VIEW
+CREATE VIEW
+CREATE FUNCTION
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+INSERT 0 0
+ALTER TABLE
+NOTICE:  constraint "approved_memories_omi_visibility_check" of relation "approved_memories" does not exist, skipping
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+time="2026-05-10T23:05:02Z" level=warning msg="Docker Compose is configured to build using Bake, but buildx isn't installed"
+#0 building with "default" instance using docker driver
+
+#1 [omi-supabase-web internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 344B done
+#1 DONE 0.4s
+
+#2 [omi-supabase-web internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.2s
+
+#3 [omi-supabase-web internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [omi-supabase-web internal] load build context
+#4 transferring context: 67.30kB 0.0s done
+#4 DONE 0.2s
+
+#5 [omi-supabase-web 1/5] FROM docker.io/library/python:3.12-slim@sha256:ec948fa5f90f4f8907e89f4800cfd2d2e91e391a4bce4a6afa77ba265bc3a2fe
+#5 resolve docker.io/library/python:3.12-slim@sha256:ec948fa5f90f4f8907e89f4800cfd2d2e91e391a4bce4a6afa77ba265bc3a2fe
+#5 resolve docker.io/library/python:3.12-slim@sha256:ec948fa5f90f4f8907e89f4800cfd2d2e91e391a4bce4a6afa77ba265bc3a2fe 0.2s done
+#5 DONE 0.3s
+
+#6 [omi-supabase-web 4/5] RUN pip install --no-cache-dir -r /app/requirements.txt
+#6 CACHED
+
+#7 [omi-supabase-web 2/5] WORKDIR /app
+#7 CACHED
+
+#8 [omi-supabase-web 3/5] COPY requirements.txt /app/requirements.txt
+#8 CACHED
+
+#9 [omi-supabase-web 5/5] COPY app.py /app/app.py
+#9 CACHED
+
+#10 [omi-supabase-web] exporting to image
+#10 exporting layers done
+#10 exporting manifest sha256:58b536064364e31dc90754f85b34eb20fd1cdbe868cae04e0be794f09622919c 0.1s done
+#10 exporting config sha256:e3d9552582750f8bc25f0d31aec1e40bb0daa8fa70cfc880cc87012787b8f4bf
+#10 exporting config sha256:e3d9552582750f8bc25f0d31aec1e40bb0daa8fa70cfc880cc87012787b8f4bf 0.1s done
+#10 exporting attestation manifest sha256:e684a0b961808ea1a508871522b25ac04a4e15cb3bf93cc30f700a6c70fb8407
+#10 exporting attestation manifest sha256:e684a0b961808ea1a508871522b25ac04a4e15cb3bf93cc30f700a6c70fb8407 0.4s done
+#10 exporting manifest list sha256:097141eb69643affedb0ae00081d27309e7576c4836522e38d065c4067c87731
+#10 exporting manifest list sha256:097141eb69643affedb0ae00081d27309e7576c4836522e38d065c4067c87731 0.3s done
+#10 naming to docker.io/library/omi-supabase-omi-supabase-web:latest
+#10 naming to docker.io/library/omi-supabase-omi-supabase-web:latest 0.0s done
+#10 unpacking to docker.io/library/omi-supabase-omi-supabase-web:latest
+#10 unpacking to docker.io/library/omi-supabase-omi-supabase-web:latest 1.7s done
+#10 DONE 2.9s
+
+#11 [omi-supabase-web] resolving provenance for metadata file
+#11 DONE 0.0s
+ omi-supabase-web  Built
+time="2026-05-10T23:05:09Z" level=warning msg="Found orphan containers ([omi-supabase-test-db]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container omi-supabase-web  Creating
+ Container omi-supabase-web  Created
+ Container omi-supabase-web  Starting
+ Container omi-supabase-web  Started
+ Volume omi-supabase_n8n_data  Creating
+ Volume omi-supabase_n8n_data  Created
+time="2026-05-10T23:05:11Z" level=warning msg="Found orphan containers ([omi-supabase-web omi-supabase-test-db]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container omi-supabase-n8n  Creating
+ Container omi-supabase-n8n  Created
+ Container omi-supabase-n8n  Starting
+ Container omi-supabase-n8n  Started
+Containers:
+omi-supabase-n8n	Up 1 second	0.0.0.0:5678->5678/tcp, [::]:5678->5678/tcp
+omi-supabase-web	Up 3 seconds	0.0.0.0:8097->8097/tcp, [::]:8097->8097/tcp
+omi-supabase-test-db	Up 20 seconds (healthy)	0.0.0.0:55432->5432/tcp, [::]:55432->5432/tcp
+
+Web UI: http://localhost:8097/review
+n8n:    http://localhost:5678
+
+Install complete.
+- PASS: installer completed
+
+## Page checks
+
+- PASS: memory home route returns 200
+- PASS: memory home contains cockpit heading
+- PASS: review page contains home button
+- PASS: review route returns 200
+- PASS: primary memories route returns 200
+- PASS: new memory route returns 200
+- PASS: submissions route returns 200
+- PASS: trash route returns 200
+- PASS: n8n route reachable
+
+## Uninstall
+
+ Container omi-supabase-web  Stopping
+ Container omi-supabase-web  Stopped
+ Container omi-supabase-web  Removing
+ Container omi-supabase-web  Removed
+ Container omi-supabase-test-db  Stopping
+ Container omi-supabase-n8n  Stopping
+ Container omi-supabase-test-db  Stopped
+ Container omi-supabase-test-db  Removing
+ Container omi-supabase-test-db  Removed
+ Container omi-supabase-n8n  Stopped
+ Container omi-supabase-n8n  Removing
+ Container omi-supabase-n8n  Removed
+ Image omi-supabase-omi-supabase-web:latest  Removing
+ Network omi-supabase_default  Removing
+ Network omi-supabase_default  Removed
+ Image omi-supabase-omi-supabase-web:latest  Removed
+ Volume omi-supabase_n8n_data  Removing
+ Volume omi-supabase_n8n_data  Removed
+Uninstall complete. Only the pulled repository files should remain.
+- PASS: uninstall completed
+- PASS: no project containers remain
+- PASS: no project volumes remain
+- PASS: generated env removed
 
 ## Result
 
+- Passed checks: 15
+- Failed checks: 0
+- Test completed: 2026-05-10T23:05:30+00:00
+
 **Overall result: PASS**
-
-- Fresh full-VM validation completed: 2026-05-10.
-- Public repo commit tested: `f048dd8` (`Keep installer compose services during web startup`).
-- Test mode: cloned the public GitHub repository, installed the local stack, exercised memory-management workflows with disposable/mock Omi data, uninstalled the stack, and verified cleanup.
-- Check summary: **38 passed, 0 failed**.
-- Secrets: generated UI credentials and mock API key were not recorded.
-
-## Environment Summary
-
-- Full VM, not LXC.
-- Test user: `gtgb`.
-- OS family: Ubuntu Linux.
-- Runtime prerequisites installed before the repo test:
-  - `git`
-  - Docker Engine
-  - Docker Compose plugin
-- Docker was verified usable by `gtgb` without `sudo`.
-
-## Important Finding During Initial Diagnostic Pass
-
-An initial same-VM diagnostic attempt exposed an installer issue: the web startup command used Docker Compose `--remove-orphans` while the database, web UI, and optional n8n services are intentionally split across compose files under the same project name. That caused the web compose step to remove sibling services such as Postgres/n8n.
-
-Fix committed before the comprehensive pass:
-
-- Commit: `f048dd8 Keep installer compose services during web startup`
-- Change: `install.sh` no longer uses `--remove-orphans` during normal web startup.
-- Cleanup still uses explicit `down -v --rmi local --remove-orphans` paths during uninstall.
-
-The successful comprehensive test below was run from a fresh clone of the fixed public repository.
-
-## Step-by-Step Test Summary
-
-### 1. Baseline VM and Prerequisites
-
-Validated:
-
-- VM booted cleanly.
-- Root filesystem had sufficient free space.
-- Memory was sufficient for Postgres, FastAPI UI, n8n, and mock Omi API.
-- Docker and Compose were available.
-- `docker ps` worked as the `gtgb` user.
-
-Result: **PASS**
-
-### 2. Repository Sync
-
-Command flow tested:
-
-```bash
-git clone https://github.com/GeekTheGreyBeard/OMI-Supabase.git OMI-Supabase
-cd OMI-Supabase
-git rev-parse --short HEAD
-git status --short
-```
-
-Validated:
-
-- Public repository cloned successfully.
-- Tested commit was `f048dd8`.
-- Working tree was clean immediately after clone.
-
-Result: **PASS**
-
-### 3. Static Package Validation
-
-Command tested:
-
-```bash
-./scripts/validate_package.sh
-```
-
-Observed:
-
-```text
-workflow_exports_ok 6
-package_validation_ok
-```
-
-Validated:
-
-- Six n8n workflow exports were present and parseable.
-- Package validation passed.
-
-Result: **PASS**
-
-### 4. Installer Install With Local n8n
-
-Command tested:
-
-```bash
-./install.sh install --non-interactive --with-n8n
-```
-
-Validated:
-
-- Installer created repo-local `website/pocReviewUi/.env`.
-- Postgres container started and became healthy.
-- SQL schema applied successfully.
-- FastAPI review UI image built and container started.
-- n8n container started on the local n8n port.
-- Postgres remained running after web startup, confirming the compose-orphan fix.
-
-Health/UI checks:
-
-- `/health` returned `{"ok": true}`.
-- Authenticated `/review` loaded.
-- Authenticated `/memory/new` loaded.
-- n8n HTTP endpoint became reachable.
-
-Database checks:
-
-- `pmh` schema objects existed.
-- Five `pmh.source_systems` seed rows existed.
-- `pmh.review_queue` view existed.
-
-Result: **PASS**
-
-### 5. Mock Omi API Setup
-
-A disposable local mock Omi API container was attached to the same Docker network. It implemented the Omi memory endpoints needed for this test:
-
-- `GET /v1/dev/user/memories`
-- `POST /v1/dev/user/memories`
-- `DELETE /v1/dev/user/memories/{id}`
-- `GET /mock/state` for verification only
-
-The UI `.env` was adjusted to point at the mock API, then the web container was rebuilt/restarted.
-
-Validated:
-
-- Web health returned OK after restart.
-- Mock Omi API was reachable from the web container.
-- Postgres still remained running after web restart.
-
-Result: **PASS**
-
-### 6. Omi Pull and Candidate Review Lifecycle
-
-Tested flow:
-
-1. Pulled two mock Omi memories through the UI pull endpoint.
-2. Confirmed two `pmh.memory_candidates` rows were created.
-3. Confirmed the review page displayed pulled mock memory content.
-4. Selected a candidate.
-5. Submitted `correct_and_approve` review action with edited title/content, category, sensitivity, visibility, recall flag, tag, and notes.
-6. Confirmed the approved memory appeared in primary memory.
-7. Confirmed review action history was recorded.
-
-Validated objects:
-
-- `pmh.raw_events`
-- `pmh.memory_candidates`
-- `pmh.external_refs`
-- `pmh.approved_memories`
-- `pmh.review_actions`
-
-Result: **PASS**
-
-### 7. Approved Memory Edit, Omi Replace Sync, Trash, and Restore
-
-Tested flow:
-
-1. Edited an approved memory through the UI.
-2. Confirmed edit set confidence to `1.000`.
-3. Submitted the edited memory to Omi.
-4. Confirmed replacement sync job succeeded.
-5. Confirmed the original mock Omi ID was marked `deleted_remote`.
-6. Confirmed the mock Omi API received a delete for the superseded memory.
-7. Moved the approved memory to trash.
-8. Confirmed lifecycle became `deleted` and recall was disabled.
-9. Confirmed trash page displayed the deleted memory.
-10. Restored the trashed memory.
-11. Confirmed lifecycle returned to `active`.
-12. Confirmed restore queued a new create sync job.
-
-Validated behavior:
-
-- PMH treats Omi as a source of candidate evidence, not truth.
-- Durable memory requires approval before entering primary memory.
-- Edits preserve PMH as the reviewed source of truth.
-- Omi replace behavior creates a new mock memory and deletes the superseded original.
-- Trash disables recall eligibility.
-- Restore does not resurrect old Omi IDs; it queues a fresh create.
-
-Result: **PASS**
-
-### 8. Scratch Memory and Submission Queue
-
-Tested flow:
-
-1. Created a new memory from scratch using `/memory/new`.
-2. Confirmed approved memory row was created.
-3. Confirmed a queued create sync job was created.
-4. Confirmed submission queue displayed the scratch memory.
-5. Submitted the scratch memory to mock Omi.
-6. Confirmed create sync succeeded.
-
-Result: **PASS**
-
-### 9. Pre-Uninstall State Summary
-
-Before uninstall, the stack contained expected test data:
-
-- PMH tables: `14`
-- Candidates: `2`
-- Approved memories: `2`
-- Review actions: `6`
-- Sync jobs: `5`
-
-Mock Omi API observed:
-
-- Two created memories:
-  - edited approved memory replacement
-  - scratch memory submission
-- Two deleted IDs:
-  - original pulled Omi memory superseded by replacement
-  - replacement memory deleted during trash flow
-
-Result: **PASS**
-
-### 10. Full Uninstall and Cleanup Verification
-
-Command tested:
-
-```bash
-./install.sh uninstall --yes
-```
-
-Validated cleanup:
-
-- OMI-Supabase containers removed.
-- OMI-Supabase Docker volumes removed.
-- OMI-Supabase Docker networks removed.
-- Locally built OMI-Supabase web image removed.
-- Generated `website/pocReviewUi/.env` removed.
-- Pulled repository files remained.
-- Git working tree remained clean after uninstall.
-
-Result: **PASS**
-
-## Final Verification Matrix
-
-| Area | Result |
-| --- | --- |
-| Fresh public clone | PASS |
-| Package/workflow validation | PASS |
-| Installer install | PASS |
-| Postgres schema setup | PASS |
-| FastAPI review UI | PASS |
-| Optional local n8n startup | PASS |
-| Mock Omi API connectivity | PASS |
-| Omi pull to candidate queue | PASS |
-| Candidate correction/approval | PASS |
-| Approved memory edit | PASS |
-| Omi replace sync | PASS |
-| Trash lifecycle | PASS |
-| Restore lifecycle | PASS |
-| Scratch memory creation | PASS |
-| Submission queue | PASS |
-| Mock Omi create/delete behavior | PASS |
-| Full uninstall | PASS |
-| Runtime trace cleanup | PASS |
-
-## Conclusion
-
-The standalone public OMI-Supabase POC installer passed comprehensive fresh-VM validation after the compose-orphan fix. The install flow, review/approval memory-management flow, Omi pull/replace/create/delete behavior against a mock Omi API, trash/restore lifecycle, submission queue, and uninstall cleanup all behaved as expected.
