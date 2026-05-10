@@ -131,7 +131,10 @@ start_db() {
 }
 
 start_web() {
-  "${COMPOSE_WEB[@]}" up -d --build --remove-orphans
+  # Keep compose fragments independent: the DB and optional n8n services are
+  # started from separate compose files under the same project name. Do not use
+  # --remove-orphans here, or Docker Compose will remove those sibling services.
+  "${COMPOSE_WEB[@]}" up -d --build
 }
 
 start_n8n() {
