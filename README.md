@@ -24,6 +24,14 @@ The project is designed so Omi captures are treated as *evidence*, not automatic
 
 ![OMI-Supabase new memory form](docs/assets/screenshots/new-memory.png)
 
+### n8n workflow overview
+
+![OMI-Supabase n8n workflow overview](docs/assets/screenshots/n8n-workflows-overview.png)
+
+### n8n raw intake workflow
+
+![OMI-Supabase n8n raw intake workflow](docs/assets/screenshots/n8n-raw-intake-workflow.png)
+
 ---
 
 ## Architecture

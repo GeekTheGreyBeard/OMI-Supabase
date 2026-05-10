@@ -7,9 +7,9 @@ This project uses two lightweight visual documentation conventions:
 
 ## Screenshot capture
 
-Screenshots in this repository were captured from a disposable local database with no personal memory data.
+Screenshots in this repository were captured from disposable local services with no personal memory data. The n8n screenshots use imported public workflow exports and a throwaway local n8n owner account.
 
-Recommended pattern:
+Recommended pattern for the FastAPI review UI:
 
 ```bash
 SCREENSHOT_BASIC_USER='screenshot' \
@@ -22,7 +22,9 @@ path/to/capture-screenshot.sh \
   --full-page true
 ```
 
-When documenting public/open-source projects, avoid screenshots containing real names, secrets, private memories, or internal hostnames.
+For n8n workflow screenshots, import the public workflow JSON files into a disposable local n8n instance and capture only the workflow list/canvas screens. Avoid execution details, credentials, environment variables, or any private run data.
+
+When documenting public/open-source projects, avoid screenshots containing real names, secrets, private memories, internal hostnames, or private execution data.
 
 ## Mermaid
 
