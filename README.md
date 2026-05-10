@@ -144,6 +144,89 @@ Optional but recommended:
 
 ---
 
+
+## Installer
+
+The repo includes a simple installer for local/self-hosted deployments.
+
+```bash
+./install.sh install
+```
+
+The installer will:
+
+1. Check for Docker and Docker Compose.
+2. Create `website/pocReviewUi/.env` if it does not exist.
+3. Start the local Postgres database.
+4. Apply the complete PMH schema SQL.
+5. Build and start the web UI on port `8097`.
+
+Open:
+
+```text
+http://SERVER_IP:8097/review
+```
+
+### Non-interactive install
+
+For scripts or quick evaluation:
+
+```bash
+./install.sh install --non-interactive
+```
+
+This generates a local UI password and leaves `OMI_API_KEY` blank. Edit `website/pocReviewUi/.env` afterward before using Omi API retrieve/submit features.
+
+### Include local n8n
+
+To also start a local n8n container on port `5678`:
+
+```bash
+./install.sh install --with-n8n
+```
+
+Open n8n at:
+
+```text
+http://SERVER_IP:5678
+```
+
+Then import the workflow JSON files from `workflows/`.
+
+### Start, stop, and status
+
+```bash
+./install.sh status
+./install.sh stop --with-n8n
+./install.sh start --with-n8n
+```
+
+`stop` keeps containers/data available for later restart.
+
+### Cleanup / uninstall
+
+If you decide to remove the installed stack:
+
+```bash
+./install.sh uninstall
+```
+
+For non-interactive cleanup:
+
+```bash
+./install.sh uninstall --yes
+```
+
+The cleanup removes OMI-Supabase containers, Docker volumes, Docker networks, locally-built images, and the generated `website/pocReviewUi/.env` file. The pulled repository remains, but the installed runtime stack and local database data are removed.
+
+If you want to keep your `.env` file:
+
+```bash
+./install.sh uninstall --yes --keep-env
+```
+
+---
+
 ## Quick start on a clean Linux install
 
 ### 1. Install system packages
@@ -239,7 +322,7 @@ nano .env
 Set values like:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55432/postgres
+DATABASE_URL=postgresql://postgres:postgres@omi-supabase-test-db:5432/postgres
 PMH_UI_USER=admin
 PMH_UI_PASSWORD=choose-a-strong-password
 OMI_API_BASE=https://api.omi.me
