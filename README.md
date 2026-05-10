@@ -1,5 +1,7 @@
 # OMI-Supabase
 
+> **Proof of Concept:** This project is an open-source POC made available to the world as a working starting point for Omi + n8n + Supabase/Postgres memory management. It is not a polished product, security-audited service, or turnkey SaaS. Review the code, secure your deployment, and treat personal memory data with care.
+
 OMI-Supabase is a self-hosted memory management system for [Omi](https://www.omi.me/) memories and webhook events.
 
 It combines:
@@ -449,4 +451,4 @@ docker compose -f docker-compose.test-postgres.yml down -v
 
 ## License
 
-No license has been selected yet. Treat this repository as private/internal unless a license is added.
+This project is released under the [MIT License](LICENSE).
