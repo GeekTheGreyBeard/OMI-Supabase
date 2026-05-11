@@ -1,5 +1,17 @@
 # OMI-Supabase Test Notes
 
+## Fresh install smoke test
+
+The strongest local release gate is the repository smoke-test runner:
+
+```bash
+./scripts/run_install_smoke_test.sh
+```
+
+It creates a disposable copy of the current working tree, runs static package validation, performs a non-interactive install with local Postgres and n8n, checks the main authenticated web routes plus n8n reachability, uninstalls the stack, and verifies generated containers, volumes, and `.env` are removed. The script refuses to start if existing `omi-supabase` containers are present, to avoid disturbing a live local stack.
+
+By default it refreshes `installTest.md` with the latest evidence. Set `LOG=/path/to/file` to write elsewhere, or `WITH_N8N=0` to skip the n8n container check.
+
 ## Disposable database validation
 
 Command pattern used:
