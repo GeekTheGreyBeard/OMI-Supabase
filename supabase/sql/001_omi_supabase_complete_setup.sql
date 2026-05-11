@@ -172,13 +172,13 @@ create index if not exists memory_candidates_source_idx on pmh.memory_candidates
 create index if not exists sync_jobs_status_idx on pmh.sync_jobs(status, priority, not_before);
 create index if not exists audit_log_target_idx on pmh.audit_log(target_type, target_id, occurred_at desc);
 
-insert into pmh.source_systems (source_key, display_name, source_type, canonical_direction, supports_update, supports_delete, supports_webhook, base_url, credential_ref, notes)
+insert into pmh.source_systems (source_system_id, source_key, display_name, source_type, canonical_direction, supports_update, supports_delete, supports_webhook, base_url, credential_ref, notes)
 values
-  ('omi', 'Omi Developer API / Webhooks', 'webhook', 'bidirectional', true, true, true, 'https://api.omi.me/v1/dev', 'PatriciAI / Omi Developer API Key', 'Primary source for pendant conversations/memories. Treat as evidence, not truth.'),
-  ('nocodb_memory', 'NocoDB Memory table', 'database', 'ingest_only', false, false, false, null, null, 'Existing manual memory table with 18 rows; review/import source only.'),
-  ('n8n_chat_memory', 'n8n chat memory', 'database', 'ingest_only', false, false, false, null, null, 'Mongo n8n_general_chat_memory; not Omi-specific.'),
-  ('manual', 'Manual Personal Memory Hub entry', 'manual', 'export_only', false, false, false, null, null, 'Memories created directly in review UI.'),
-  ('web_scrape', 'Web scrape/import source', 'web_scrape', 'ingest_only', false, false, false, null, null, 'Future source type for web profiles/pages/articles.')
+  ('b56c1844-4a3c-48dd-ba39-eedf33fdeb7f'::uuid, 'omi', 'Omi Developer API / Webhooks', 'webhook', 'bidirectional', true, true, true, 'https://api.omi.me/v1/dev', 'Omi Developer API Key', 'Primary source for pendant conversations/memories. Treat as evidence, not truth.'),
+  (gen_random_uuid(), 'nocodb_memory', 'NocoDB Memory table', 'database', 'ingest_only', false, false, false, null, null, 'Existing manual memory table with 18 rows; review/import source only.'),
+  (gen_random_uuid(), 'n8n_chat_memory', 'n8n chat memory', 'database', 'ingest_only', false, false, false, null, null, 'Mongo n8n_general_chat_memory; not Omi-specific.'),
+  (gen_random_uuid(), 'manual', 'Manual Personal Memory Hub entry', 'manual', 'export_only', false, false, false, null, null, 'Memories created directly in review UI.'),
+  (gen_random_uuid(), 'web_scrape', 'Web scrape/import source', 'web_scrape', 'ingest_only', false, false, false, null, null, 'Future source type for web profiles/pages/articles.')
 on conflict (source_key) do update set
   display_name=excluded.display_name,
   source_type=excluded.source_type,
@@ -201,7 +201,7 @@ on conflict (source_key) do update set
 -- Notes:
 -- - Raw audio should not be stored directly in Postgres.
 -- - If audio retention is enabled later, store bytes in durable object storage and keep only refs/hashes here.
--- - Preferred STT service: Speaches OpenAI-compatible endpoint at http://speaches.splat-i.io/v1/audio/transcriptions.
+-- - Preferred STT service: configure any OpenAI-compatible transcription endpoint (default local placeholder below).
 
 create table if not exists pmh.audio_segments (
   audio_segment_id uuid primary key default gen_random_uuid(),
@@ -229,7 +229,7 @@ create table if not exists pmh.transcription_jobs (
   audio_segment_id uuid references pmh.audio_segments(audio_segment_id),
   raw_event_id uuid references pmh.raw_events(raw_event_id),
   provider text not null default 'speaches',
-  endpoint_ref text not null default 'http://speaches.splat-i.io/v1/audio/transcriptions',
+  endpoint_ref text not null default 'http://localhost:8000/v1/audio/transcriptions',
   model text not null default 'whisper-1',
   status text not null default 'queued' check (status in ('queued','running','succeeded','failed','blocked','cancelled')),
   transcript_text text,

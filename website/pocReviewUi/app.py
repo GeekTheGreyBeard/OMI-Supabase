@@ -13,6 +13,9 @@ UI_PASSWORD = os.environ["PMH_UI_PASSWORD"]
 APP_TITLE = "Personal Memory Hub"
 OMI_API_KEY = os.environ.get("OMI_API_KEY")
 OMI_API_BASE = os.environ.get("OMI_API_BASE", "https://api.omi.me").rstrip("/")
+PMH_HOME_URL = os.environ.get("PMH_HOME_URL", "").strip()
+PMH_HOME_LABEL = os.environ.get("PMH_HOME_LABEL", "Back to Home").strip() or "Back to Home"
+ENABLE_PREFIXLESS_MEMORY_ROUTES = os.environ.get("PMH_ENABLE_PREFIXLESS_MEMORY_ROUTES", "").lower() in {"1", "true", "yes", "on"}
 
 # Omi Developer API memory categories documented by Omi: interesting, system, manual.
 CATEGORY_OPTIONS = ["interesting", "system", "manual"]
@@ -447,7 +450,7 @@ def omi_home_body():
         <a class='btn' href='/review'>Review candidates</a>
         <a class='btn secondary' href='/memories'>Primary memories</a>
         <a class='btn secondary' href='/omi/pull'>Retrieve from Omi</a>
-        <a class='btn secondary' href='http://patriciai-ui.gtgb.io/'>Back to PatriciAI Home</a>
+        {f"<a class='btn secondary' href='{esc(PMH_HOME_URL)}'>{esc(PMH_HOME_LABEL)}</a>" if PMH_HOME_URL else ""}
       </div>
     </section>
     <section class='grid'>
@@ -979,27 +982,28 @@ def memory_restore(memory_id: UUID, user=Depends(auth)):
     result = restore_memory_from_trash(memory_id, f'pmh-ui:{user}')
     return RedirectResponse(f"/submissions?notice={html.escape('Memory restored: ' + json.dumps(result))}", status_code=303)
 
-# Compatibility routes for PatriciAI proxy paths that may strip the /memory prefix.
-@app.get('/{memory_id}/edit', response_class=HTMLResponse)
-def memory_edit_compat(memory_id: UUID, user=Depends(auth)):
-    return memory_edit(memory_id, user)
+# Optional prefixless memory routes for reverse proxies that strip the /memory prefix.
+if ENABLE_PREFIXLESS_MEMORY_ROUTES:
+    @app.get('/{memory_id}/edit', response_class=HTMLResponse)
+    def memory_edit_compat(memory_id: UUID, user=Depends(auth)):
+        return memory_edit(memory_id, user)
 
-@app.post('/{memory_id}/edit', response_class=HTMLResponse)
-async def memory_update_compat(request: Request, memory_id: UUID, user=Depends(auth)):
-    return await memory_update(request, memory_id, user)
+    @app.post('/{memory_id}/edit', response_class=HTMLResponse)
+    async def memory_update_compat(request: Request, memory_id: UUID, user=Depends(auth)):
+        return await memory_update(request, memory_id, user)
 
-@app.get('/{memory_id}/submit', response_class=HTMLResponse)
-def memory_submit_confirm_compat(memory_id: UUID, user=Depends(auth)):
-    return memory_submit_confirm(memory_id, user)
+    @app.get('/{memory_id}/submit', response_class=HTMLResponse)
+    def memory_submit_confirm_compat(memory_id: UUID, user=Depends(auth)):
+        return memory_submit_confirm(memory_id, user)
 
-@app.post('/{memory_id}/trash')
-def memory_trash_compat(memory_id: UUID, user=Depends(auth)):
-    return memory_trash(memory_id, user)
+    @app.post('/{memory_id}/trash')
+    def memory_trash_compat(memory_id: UUID, user=Depends(auth)):
+        return memory_trash(memory_id, user)
 
-@app.post('/{memory_id}/restore')
-def memory_restore_compat(memory_id: UUID, user=Depends(auth)):
-    return memory_restore(memory_id, user)
+    @app.post('/{memory_id}/restore')
+    def memory_restore_compat(memory_id: UUID, user=Depends(auth)):
+        return memory_restore(memory_id, user)
 
-@app.post('/{memory_id}/submit')
-def memory_submit_compat(memory_id: UUID, user=Depends(auth)):
-    return memory_submit(memory_id, user)
+    @app.post('/{memory_id}/submit')
+    def memory_submit_compat(memory_id: UUID, user=Depends(auth)):
+        return memory_submit(memory_id, user)

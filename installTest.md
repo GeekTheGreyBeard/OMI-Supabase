@@ -5,7 +5,7 @@
 - Repository: https://github.com/GeekTheGreyBeard/OMI-Supabase.git
 - Branch: main
 
-Cloning into '/home/gtgb/omi-supabase-retest-20260510/OMI-Supabase'...
+Cloning into '/tmp/omi-supabase-retest/OMI-Supabase'...
 - Commit: 3a94b8b Add Omi memory cockpit home page
 
 ## Static validation
@@ -16,8 +16,8 @@ package_validation_ok
 
 ## Install
 
-Created /home/gtgb/omi-supabase-retest-20260510/OMI-Supabase/website/pocReviewUi/.env
-Note: OMI_API_KEY is blank. Add it to /home/gtgb/omi-supabase-retest-20260510/OMI-Supabase/website/pocReviewUi/.env before using Omi API submit/retrieve features.
+Created /tmp/omi-supabase-retest/OMI-Supabase/website/pocReviewUi/.env
+Note: OMI_API_KEY is blank. Add it to /tmp/omi-supabase-retest/OMI-Supabase/website/pocReviewUi/.env before using Omi API submit/retrieve features.
  Network omi-supabase_default  Creating
  Network omi-supabase_default  Created
  Container omi-supabase-test-db  Creating

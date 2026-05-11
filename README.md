@@ -335,6 +335,11 @@ PMH_UI_USER=admin
 PMH_UI_PASSWORD=choose-a-strong-password
 OMI_API_BASE=https://api.omi.me
 OMI_API_KEY=your-omi-developer-api-key
+# Optional: show a custom home/back link on the Omi console landing page.
+PMH_HOME_URL=
+PMH_HOME_LABEL=Back to Home
+# Optional: enable prefixless /{memory_id}/... routes for reverse proxies that strip /memory.
+PMH_ENABLE_PREFIXLESS_MEMORY_ROUTES=false
 ```
 
 Do **not** commit `.env`.

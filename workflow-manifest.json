@@ -1,6 +1,6 @@
 {
   "folder": "OMI-Supabase",
-  "source": "n8n.splat-i.io production sqlite export",
+  "source": "n8n production export",
   "workflows": [
     {
       "sourceId": "4e9DqWBqxjuY8PXO",
@@ -48,6 +48,6 @@
   "productionN8nFolder": {
     "name": "OMI-Supabase",
     "id": "3xr4cjyxAI7Ixnqj",
-    "state": "created in n8n.splat-i.io; copied workflows inactive"
+    "state": "created in n8n; copied workflows inactive"
   }
 }
