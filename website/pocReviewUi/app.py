@@ -424,7 +424,7 @@ input[type=checkbox] {{ width:auto; }} .two {{ display:grid; grid-template-colum
 <script>
 function toggleAll(source) {{ document.querySelectorAll('input[name="candidate_ids"]').forEach(cb => cb.checked = source.checked); }}
 </script>
-</head><body><div class='wrap'><div class='hero'><div><div class='brand'><span>Personal Memory Hub</span></div><div class='sub'>Omi-centered review cockpit · evidence → candidate → approved memory</div></div><div class='nav'>{nav}</div></div>{f"<div class='notice'>{esc(notice)}</div>" if notice else ""}{body}</div></body></html>"""
+</head><body><div class='wrap'><div class='hero'><div><div class='brand'><span>Personal Memory Hub</span></div><div class='sub'>Omi-centered Memory Console · evidence → candidate → approved memory</div></div><div class='nav'>{nav}</div></div>{f"<div class='notice'>{esc(notice)}</div>" if notice else ""}{body}</div></body></html>"""
 
 
 @app.get('/health')
@@ -441,7 +441,7 @@ def omi_home_body():
     return f'''
     <section class='card' style='padding:28px; margin-bottom:20px'>
       <div class='label'>Omi Memory Management</div>
-      <h1 style='margin-top:8px'>Omi <span style='background:linear-gradient(90deg,var(--accent2),#d6c7ff,var(--accent)); -webkit-background-clip:text; color:transparent'>Memory Cockpit</span></h1>
+      <h1 style='margin-top:8px'>Omi <span style='background:linear-gradient(90deg,var(--accent2),#d6c7ff,var(--accent)); -webkit-background-clip:text; color:transparent'>Memory Console</span></h1>
       <p class='muted' style='font-size:18px; max-width:780px'>A focused starting point for reviewing Omi-derived memory evidence, approving durable memories, creating new Omi-bound memories, and watching submission/sync activity.</p>
       <div class='actions'>
         <a class='btn' href='/review'>Review candidates</a>
@@ -464,7 +464,7 @@ def omi_home_body():
 @app.get('/home', response_class=HTMLResponse)
 @app.get('/memory/home', response_class=HTMLResponse)
 def root(user=Depends(auth)):
-    return layout('Omi Memory Cockpit', omi_home_body())
+    return layout('Omi Memory Console', omi_home_body())
 
 
 @app.get('/review', response_class=HTMLResponse)
