@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_NAME="omi-supabase"
+PROJECT_NAME="omi-memory-supabase"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WEBSITE_DIR="$ROOT_DIR/website"
 APP_ENV="$WEBSITE_DIR/pocReviewUi/.env"
-SQL_FILE="$ROOT_DIR/supabase/sql/001_omi_supabase_complete_setup.sql"
+SQL_FILE="$ROOT_DIR/supabase/sql/001_omi_memory_supabase_complete_setup.sql"
 COMPOSE_DB=(docker compose -p "$PROJECT_NAME" -f "$WEBSITE_DIR/docker-compose.test-postgres.yml")
 COMPOSE_WEB=(docker compose -p "$PROJECT_NAME" -f "$WEBSITE_DIR/docker-compose.website.yml")
 COMPOSE_N8N=(docker compose -p "$PROJECT_NAME" -f "$WEBSITE_DIR/docker-compose.n8n.yml")
 
 usage() {
   cat <<'EOF'
-OMI-Supabase installer
+OMI-Memory-Supabase installer
 
 Usage:
   ./install.sh install [--with-n8n] [--non-interactive]
@@ -27,7 +27,7 @@ Commands:
   start        Start existing stack without reapplying schema.
   stop         Stop containers without deleting volumes/data.
   status       Show stack containers and access URLs.
-  uninstall    Remove OMI-Supabase containers, volumes, networks, locally-built images, and generated .env.
+  uninstall    Remove OMI-Memory-Supabase containers, volumes, networks, locally-built images, and generated .env.
 
 Options:
   --with-n8n          Include local n8n container on port 5678.
@@ -95,7 +95,7 @@ write_env() {
     omi_key="${input_omi:-}"
   fi
   cat > "$APP_ENV" <<EOF
-DATABASE_URL=postgresql://postgres:postgres@omi-supabase-test-db:5432/postgres
+DATABASE_URL=postgresql://postgres:postgres@omi-memory-supabase-test-db:5432/postgres
 PMH_UI_USER=$ui_user
 PMH_UI_PASSWORD=$ui_pass
 OMI_API_BASE=https://api.omi.me
@@ -111,7 +111,7 @@ EOF
 wait_for_db() {
   echo "Waiting for Postgres..."
   for _ in {1..60}; do
-    if docker exec omi-supabase-test-db pg_isready -U postgres -d postgres >/dev/null 2>&1; then
+    if docker exec omi-memory-supabase-test-db pg_isready -U postgres -d postgres >/dev/null 2>&1; then
       return 0
     fi
     sleep 2
@@ -122,7 +122,7 @@ wait_for_db() {
 
 apply_schema() {
   echo "Applying database schema..."
-  docker exec -i omi-supabase-test-db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < "$SQL_FILE"
+  docker exec -i omi-memory-supabase-test-db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < "$SQL_FILE"
 }
 
 start_db() {
@@ -175,7 +175,7 @@ stop_stack() {
 status_stack() {
   check_prereqs
   echo "Containers:"
-  docker ps -a --filter "name=omi-supabase" --format '  {{.Names}}\t{{.Status}}\t{{.Ports}}' || true
+  docker ps -a --filter "name=omi-memory-supabase" --format '  {{.Names}}\t{{.Status}}\t{{.Ports}}' || true
   echo
   echo "Web UI: http://localhost:8097/review"
   echo "n8n:    http://localhost:5678"
@@ -186,15 +186,15 @@ uninstall_stack() {
   local keep_env="$2"
   check_prereqs
   if [[ "$yes" != "true" ]]; then
-    echo "This will remove OMI-Supabase containers, volumes, networks, and locally-built images."
+    echo "This will remove OMI-Memory-Supabase containers, volumes, networks, and locally-built images."
     echo "It will also remove $APP_ENV unless --keep-env is used."
-    read -r -p "Type 'delete omi-supabase' to continue: " confirm
-    [[ "$confirm" == "delete omi-supabase" ]] || { echo "Cancelled."; exit 1; }
+    read -r -p "Type 'delete omi-memory-supabase' to continue: " confirm
+    [[ "$confirm" == "delete omi-memory-supabase" ]] || { echo "Cancelled."; exit 1; }
   fi
   "${COMPOSE_WEB[@]}" down -v --rmi local --remove-orphans || true
   "${COMPOSE_N8N[@]}" down -v --rmi local --remove-orphans || true
   "${COMPOSE_DB[@]}" down -v --rmi local --remove-orphans || true
-  docker rm -f omi-supabase-web omi-supabase-web-test omi-supabase-web-screenshot omi-supabase-test-db omi-supabase-n8n >/dev/null 2>&1 || true
+  docker rm -f omi-memory-supabase-web omi-memory-supabase-web-test omi-memory-supabase-web-screenshot omi-memory-supabase-test-db omi-memory-supabase-n8n >/dev/null 2>&1 || true
   docker volume ls -q --filter name="${PROJECT_NAME}" | xargs -r docker volume rm >/dev/null 2>&1 || true
   docker network ls --format '{{.Name}}' | grep -E "^${PROJECT_NAME}(_|$)|^website_default$" | xargs -r docker network rm >/dev/null 2>&1 || true
   if [[ "$keep_env" != "true" ]]; then

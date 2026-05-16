@@ -1,4 +1,4 @@
--- OMI-Supabase complete setup SQL
+-- OMI-Memory-Supabase complete setup SQL
 -- Generated from personalMemoryHub PMH migrations 001-006.
 -- Apply to a fresh Supabase/Postgres database before importing n8n workflows or starting the website.
 -- Safe to re-run for additive objects where migrations use IF NOT EXISTS; constraints are refreshed by later sections.
@@ -11,7 +11,7 @@ create extension if not exists pgcrypto;
 -- ============================================================================
 -- personalMemoryHub migration draft 001
 -- Purpose: Add source-agnostic lifecycle/sync/review tables around existing Supabase schemas.
--- Status: DRAFT — review before applying to production.
+-- Status: DRAFT, review before applying to production.
 -- Note: Cross-schema foreign keys to existing mem/core/omi tables are intentionally avoided
 -- because those tables are owned by Supabase-managed roles; relationships are enforced
 -- by workflow/application logic plus audit records.
@@ -197,7 +197,7 @@ on conflict (source_key) do update set
 -- ============================================================================
 -- personalMemoryHub migration draft 002
 -- Purpose: Add optional audio segment metadata and transcription job tracking for Omi Audio Bytes.
--- Status: DRAFT — review before applying to production.
+-- Status: DRAFT, review before applying to production.
 -- Notes:
 -- - Raw audio should not be stored directly in Postgres.
 -- - If audio retention is enabled later, store bytes in durable object storage and keep only refs/hashes here.

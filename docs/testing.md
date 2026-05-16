@@ -1,4 +1,4 @@
-# OMI-Supabase Test Notes
+# OMI-Memory-Supabase Test Notes
 
 ## Fresh install smoke test
 
@@ -8,7 +8,7 @@ The strongest local release gate is the repository smoke-test runner:
 ./scripts/run_install_smoke_test.sh
 ```
 
-It creates a disposable copy of the current working tree, runs static package validation, performs a non-interactive install with local Postgres and n8n, checks the main authenticated web routes plus n8n reachability, uninstalls the stack, and verifies generated containers, volumes, and `.env` are removed. The script refuses to start if existing `omi-supabase` containers are present, to avoid disturbing a live local stack.
+It creates a disposable copy of the current working tree, runs static package validation, performs a non-interactive install with local Postgres and n8n, checks the main authenticated web routes plus n8n reachability, uninstalls the stack, and verifies generated containers, volumes, and `.env` are removed. The script refuses to start if existing `omi-memory-supabase` containers are present, to avoid disturbing a live local stack.
 
 By default it refreshes `installTest.md` with the latest evidence. Set `LOG=/path/to/file` to write elsewhere, or `WITH_N8N=0` to skip the n8n container check.
 
@@ -17,9 +17,9 @@ By default it refreshes `installTest.md` with the latest evidence. Set `LOG=/pat
 Command pattern used:
 
 ```bash
-cd n8n/OMI-Supabase/website
+cd n8n/OMI-Memory-Supabase/website
 docker compose -f docker-compose.test-postgres.yml up -d
-docker exec -i omi-supabase-test-db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < ../supabase/sql/001_omi_supabase_complete_setup.sql
+docker exec -i omi-memory-supabase-test-db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < ../supabase/sql/001_omi_memory_supabase_complete_setup.sql
 ```
 
 Result:
@@ -60,6 +60,6 @@ package_validation_ok
 Test containers were removed after validation:
 
 ```bash
-docker rm -f omi-supabase-web-test
+docker rm -f omi-memory-supabase-web-test
 docker compose -f docker-compose.test-postgres.yml down -v
 ```

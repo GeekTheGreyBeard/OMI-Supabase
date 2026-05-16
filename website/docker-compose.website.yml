@@ -1,7 +1,7 @@
 services:
-  omi-supabase-web:
+  omi-memory-supabase-web:
     build: ./pocReviewUi
-    container_name: omi-supabase-web
+    container_name: omi-memory-supabase-web
     env_file:
       - ./pocReviewUi/.env
     ports:

@@ -1,7 +1,7 @@
 services:
   n8n:
     image: n8nio/n8n:latest
-    container_name: omi-supabase-n8n
+    container_name: omi-memory-supabase-n8n
     restart: unless-stopped
     ports:
       - "5678:5678"

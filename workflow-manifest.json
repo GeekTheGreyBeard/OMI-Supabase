@@ -1,52 +1,52 @@
 {
-  "folder": "OMI-Supabase",
+  "folder": "OMI-Memory-Supabase",
   "source": "n8n production export",
   "workflows": [
     {
       "sourceId": "4e9DqWBqxjuY8PXO",
-      "exportName": "OMI-Supabase - PMH Omi Raw Intake",
-      "file": "omi-supabase-pmh-omi-raw-intake.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Omi Raw Intake",
+      "file": "omi-memory-supabase-pmh-omi-raw-intake.workflow.json",
       "active": false,
       "productionCopyId": "pOUDZcn7bligCynH"
     },
     {
       "sourceId": "2yGUIijWuAHk5Dvm",
-      "exportName": "OMI-Supabase - PMH Omi Conversation Events",
-      "file": "omi-supabase-pmh-omi-conversation-events.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Omi Conversation Events",
+      "file": "omi-memory-supabase-pmh-omi-conversation-events.workflow.json",
       "active": false,
       "productionCopyId": "qqMKsq728NInAeDv"
     },
     {
       "sourceId": "MQk4Mv1GIYdlXlzL",
-      "exportName": "OMI-Supabase - PMH Omi Real-time Transcript",
-      "file": "omi-supabase-pmh-omi-real-time-transcript.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Omi Real-time Transcript",
+      "file": "omi-memory-supabase-pmh-omi-real-time-transcript.workflow.json",
       "active": false,
       "productionCopyId": "8GuWWqETs2PsPT4G"
     },
     {
       "sourceId": "WsswSk1B0Qu51psJ",
-      "exportName": "OMI-Supabase - PMH Omi Day Summary",
-      "file": "omi-supabase-pmh-omi-day-summary.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Omi Day Summary",
+      "file": "omi-memory-supabase-pmh-omi-day-summary.workflow.json",
       "active": false,
       "productionCopyId": "9znDsuIei7C2deWW"
     },
     {
       "sourceId": "t3ccpiv6c1vrZJum",
-      "exportName": "OMI-Supabase - PMH Omi Audio Bytes",
-      "file": "omi-supabase-pmh-omi-audio-bytes.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Omi Audio Bytes",
+      "file": "omi-memory-supabase-pmh-omi-audio-bytes.workflow.json",
       "active": false,
       "productionCopyId": "Xb8TdFjpE5FuJ2Ht"
     },
     {
       "sourceId": "fsRCaO5aeJX0XuAF",
-      "exportName": "OMI-Supabase - PMH Candidate Extractor POC",
-      "file": "omi-supabase-pmh-candidate-extractor-poc.workflow.json",
+      "exportName": "OMI-Memory-Supabase - PMH Candidate Extractor POC",
+      "file": "omi-memory-supabase-pmh-candidate-extractor-poc.workflow.json",
       "active": false,
       "productionCopyId": "M6WxESgXltE6BTOB"
     }
   ],
   "productionN8nFolder": {
-    "name": "OMI-Supabase",
+    "name": "OMI-Memory-Supabase",
     "id": "3xr4cjyxAI7Ixnqj",
     "state": "created in n8n; copied workflows inactive"
   }

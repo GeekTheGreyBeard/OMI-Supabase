@@ -1,8 +1,8 @@
-# OMI-Supabase
+# OMI-Memory-Supabase
 
 > **Proof of Concept:** This project is an open-source POC made available to the world as a working starting point for Omi + n8n + Supabase/Postgres memory management. It is not a polished product, security-audited service, or turnkey SaaS. Review the code, secure your deployment, and treat personal memory data with care.
 
-OMI-Supabase is a self-hosted memory management system for [Omi](https://www.omi.me/) memories and webhook events.
+OMI-Memory-Supabase is a self-hosted memory management system for [Omi](https://www.omi.me/) memories and webhook events.
 
 It combines:
 
@@ -18,19 +18,19 @@ The project is designed so Omi captures are treated as *evidence*, not automatic
 
 ### Review queue
 
-![OMI-Supabase review queue](docs/assets/screenshots/review-queue.png)
+![OMI-Memory-Supabase review queue](docs/assets/screenshots/review-queue.png)
 
 ### Create a new memory
 
-![OMI-Supabase new memory form](docs/assets/screenshots/new-memory.png)
+![OMI-Memory-Supabase new memory form](docs/assets/screenshots/new-memory.png)
 
 ### n8n workflow overview
 
-![OMI-Supabase n8n workflow overview](docs/assets/screenshots/n8n-workflows-overview.png)
+![OMI-Memory-Supabase n8n workflow overview](docs/assets/screenshots/n8n-workflows-overview.png)
 
 ### n8n raw intake workflow
 
-![OMI-Supabase n8n raw intake workflow](docs/assets/screenshots/n8n-raw-intake-workflow.png)
+![OMI-Memory-Supabase n8n raw intake workflow](docs/assets/screenshots/n8n-raw-intake-workflow.png)
 
 ---
 
@@ -112,7 +112,7 @@ When a memory is moved to trash, the app deletes the active Omi memory if its Om
 │   └── validate_package.sh
 ├── supabase/
 │   └── sql/
-│       └── 001_omi_supabase_complete_setup.sql
+│       └── 001_omi_memory_supabase_complete_setup.sql
 ├── website/
 │   ├── docker-compose.test-postgres.yml
 │   ├── docker-compose.website.yml
@@ -122,12 +122,12 @@ When a memory is moved to trash, the app deletes the active Omi memory if its Om
 │       ├── app.py
 │       └── requirements.txt
 ├── workflows/
-│   ├── omi-supabase-pmh-candidate-extractor-poc.workflow.json
-│   ├── omi-supabase-pmh-omi-audio-bytes.workflow.json
-│   ├── omi-supabase-pmh-omi-conversation-events.workflow.json
-│   ├── omi-supabase-pmh-omi-day-summary.workflow.json
-│   ├── omi-supabase-pmh-omi-raw-intake.workflow.json
-│   └── omi-supabase-pmh-omi-real-time-transcript.workflow.json
+│   ├── omi-memory-supabase-pmh-candidate-extractor-poc.workflow.json
+│   ├── omi-memory-supabase-pmh-omi-audio-bytes.workflow.json
+│   ├── omi-memory-supabase-pmh-omi-conversation-events.workflow.json
+│   ├── omi-memory-supabase-pmh-omi-day-summary.workflow.json
+│   ├── omi-memory-supabase-pmh-omi-raw-intake.workflow.json
+│   └── omi-memory-supabase-pmh-omi-real-time-transcript.workflow.json
 └── workflow-manifest.json
 ```
 
@@ -225,7 +225,7 @@ For non-interactive cleanup:
 ./install.sh uninstall --yes
 ```
 
-The cleanup removes OMI-Supabase containers, Docker volumes, Docker networks, locally-built images, and the generated `website/pocReviewUi/.env` file. The pulled repository remains, but the installed runtime stack and local database data are removed.
+The cleanup removes OMI-Memory-Supabase containers, Docker volumes, Docker networks, locally-built images, and the generated `website/pocReviewUi/.env` file. The pulled repository remains, but the installed runtime stack and local database data are removed.
 
 If you want to keep your `.env` file:
 
@@ -278,8 +278,8 @@ docker compose version
 ### 3. Clone this repository
 
 ```bash
-git clone https://github.com/GeekTheGreyBeard/OMI-Supabase.git
-cd OMI-Supabase
+git clone https://github.com/GeekTheGreyBeard/OMI-Memory-Supabase.git
+cd OMI-Memory-Supabase
 ```
 
 ### 4. Start a local Postgres database
@@ -294,21 +294,21 @@ docker compose -f docker-compose.test-postgres.yml up -d
 Wait until Postgres is healthy:
 
 ```bash
-docker exec omi-supabase-test-db pg_isready -U postgres -d postgres
+docker exec omi-memory-supabase-test-db pg_isready -U postgres -d postgres
 ```
 
 ### 5. Apply the database schema
 
 ```bash
-docker exec -i omi-supabase-test-db \
+docker exec -i omi-memory-supabase-test-db \
   psql -U postgres -d postgres -v ON_ERROR_STOP=1 \
-  < ../supabase/sql/001_omi_supabase_complete_setup.sql
+  < ../supabase/sql/001_omi_memory_supabase_complete_setup.sql
 ```
 
 Verify basic setup:
 
 ```bash
-docker exec omi-supabase-test-db psql -U postgres -d postgres -Atc \
+docker exec omi-memory-supabase-test-db psql -U postgres -d postgres -Atc \
   "select 'source_systems=' || count(*) from pmh.source_systems union all select 'pmh_tables=' || count(*) from information_schema.tables where table_schema='pmh';"
 ```
 
@@ -330,7 +330,7 @@ nano .env
 Set values like:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@omi-supabase-test-db:5432/postgres
+DATABASE_URL=postgresql://postgres:postgres@omi-memory-supabase-test-db:5432/postgres
 PMH_UI_USER=admin
 PMH_UI_PASSWORD=choose-a-strong-password
 OMI_API_BASE=https://api.omi.me
@@ -420,7 +420,7 @@ For production, put n8n behind HTTPS and set `WEBHOOK_URL` to the public HTTPS U
 
 In n8n:
 
-1. Create a folder named `OMI-Supabase`.
+1. Create a folder named `OMI-Memory-Supabase`.
 2. Import each JSON file from `workflows/`.
 3. Keep workflows inactive until credentials and webhook URLs are correct.
 4. Create or map the Postgres credential used by the workflows.
@@ -431,12 +431,12 @@ Included workflow exports are intentionally inactive to prevent webhook collisio
 
 ### Recommended activation order
 
-1. `OMI-Supabase - PMH Omi Raw Intake`
-2. `OMI-Supabase - PMH Omi Conversation Events`
-3. `OMI-Supabase - PMH Omi Real-time Transcript`
-4. `OMI-Supabase - PMH Omi Day Summary`
-5. `OMI-Supabase - PMH Omi Audio Bytes`, if you want audio metadata intake
-6. `OMI-Supabase - PMH Candidate Extractor POC`
+1. `OMI-Memory-Supabase - PMH Omi Raw Intake`
+2. `OMI-Memory-Supabase - PMH Omi Conversation Events`
+3. `OMI-Memory-Supabase - PMH Omi Real-time Transcript`
+4. `OMI-Memory-Supabase - PMH Omi Day Summary`
+5. `OMI-Memory-Supabase - PMH Omi Audio Bytes`, if you want audio metadata intake
+6. `OMI-Memory-Supabase - PMH Candidate Extractor POC`
 
 ---
 
@@ -466,7 +466,7 @@ This is the fastest path to a working private system.
 Create a Supabase project, then apply:
 
 ```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/sql/001_omi_supabase_complete_setup.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/sql/001_omi_memory_supabase_complete_setup.sql
 ```
 
 Use the Supabase connection string as `DATABASE_URL` for the web UI and as the Postgres credential in n8n.
@@ -494,13 +494,13 @@ You can use the official Supabase self-hosting stack, then apply the same SQL to
 At minimum, back up Postgres:
 
 ```bash
-docker exec omi-supabase-test-db pg_dump -U postgres -d postgres > omi-supabase-backup.sql
+docker exec omi-memory-supabase-test-db pg_dump -U postgres -d postgres > omi-memory-supabase-backup.sql
 ```
 
 Restore example:
 
 ```bash
-docker exec -i omi-supabase-test-db psql -U postgres -d postgres < omi-supabase-backup.sql
+docker exec -i omi-memory-supabase-test-db psql -U postgres -d postgres < omi-memory-supabase-backup.sql
 ```
 
 For production, automate backups and test restores regularly.

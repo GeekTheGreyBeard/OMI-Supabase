@@ -2,9 +2,9 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROJECT_NAME="omi-supabase"
+PROJECT_NAME="omi-memory-supabase"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-WORKDIR="${TMPDIR:-/tmp}/omi-supabase-install-smoke-$STAMP"
+WORKDIR="${TMPDIR:-/tmp}/omi-memory-supabase-install-smoke-$STAMP"
 LOG="${LOG:-$ROOT/installTest.md}"
 REPO_URL="${REPO_URL:-$(git -C "$ROOT" config --get remote.origin.url 2>/dev/null || printf '%s' "$ROOT")}"
 BRANCH="${BRANCH:-$(git -C "$ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || printf 'unknown')}"
@@ -25,9 +25,9 @@ require_cmd() {
 
 check_no_existing_stack() {
   local existing
-  existing="$(docker ps -a --filter "name=omi-supabase" --format '{{.Names}}' || true)"
+  existing="$(docker ps -a --filter "name=omi-memory-supabase" --format '{{.Names}}' || true)"
   if [[ -n "$existing" ]]; then
-    echo "Refusing to run: existing omi-supabase containers are present:" >&2
+    echo "Refusing to run: existing omi-memory-supabase containers are present:" >&2
     echo "$existing" >&2
     echo "Stop/remove the stack intentionally before running this smoke test." >&2
     exit 1
@@ -35,8 +35,8 @@ check_no_existing_stack() {
 }
 
 cleanup() {
-  if [[ -d "$WORKDIR/OMI-Supabase" ]]; then
-    (cd "$WORKDIR/OMI-Supabase" && ./install.sh uninstall --yes >/tmp/omi-supabase-smoke-cleanup.log 2>&1) || true
+  if [[ -d "$WORKDIR/OMI-Memory-Supabase" ]]; then
+    (cd "$WORKDIR/OMI-Memory-Supabase" && ./install.sh uninstall --yes >/tmp/omi-memory-supabase-smoke-cleanup.log 2>&1) || true
   fi
   rm -rf "$WORKDIR"
 }
@@ -88,7 +88,7 @@ rm -rf "$WORKDIR"
 mkdir -p "$WORKDIR"
 : > "$LOG"
 cat >> "$LOG" <<EOF
-# OMI-Supabase install smoke test
+# OMI-Memory-Supabase install smoke test
 
 - Test host: $(hostname)
 - Test started: $(date -u --iso-8601=seconds)
@@ -99,9 +99,9 @@ cat >> "$LOG" <<EOF
 EOF
 
 section "Fresh package copy"
-mkdir -p "$WORKDIR/OMI-Supabase"
-tar --exclude='./.git' --exclude='./website/pocReviewUi/.env' -C "$ROOT" -cf - . | tar -C "$WORKDIR/OMI-Supabase" -xf -
-cd "$WORKDIR/OMI-Supabase"
+mkdir -p "$WORKDIR/OMI-Memory-Supabase"
+tar --exclude='./.git' --exclude='./website/pocReviewUi/.env' -C "$ROOT" -cf - . | tar -C "$WORKDIR/OMI-Memory-Supabase" -xf -
+cd "$WORKDIR/OMI-Memory-Supabase"
 COMMIT="$(git -C "$ROOT" log -1 --oneline 2>/dev/null || printf 'unknown')"
 DIRTY="$(git -C "$ROOT" status --short 2>/dev/null | wc -l | tr -d ' ')"
 printf -- '- Base commit: %s\n' "$COMMIT" | tee -a "$LOG"
@@ -151,9 +151,9 @@ if [[ "$WITH_N8N" == "1" ]]; then
   else
     fail "n8n route became reachable"
   fi
-  code="$(curl -sS -L -o /tmp/omi-supabase-n8n-smoke.out -w '%{http_code}' http://localhost:5678/ || true)"
+  code="$(curl -sS -L -o /tmp/omi-memory-supabase-n8n-smoke.out -w '%{http_code}' http://localhost:5678/ || true)"
   if [[ "$code" =~ ^(200|302)$ ]]; then pass "n8n route reachable"; else fail "n8n route returned HTTP $code"; fi
-  rm -f /tmp/omi-supabase-n8n-smoke.out
+  rm -f /tmp/omi-memory-supabase-n8n-smoke.out
 fi
 
 section "Uninstall"
@@ -162,7 +162,7 @@ if ./install.sh uninstall --yes 2>&1 | tee -a "$LOG"; then
 else
   fail "uninstall completed"
 fi
-if [[ -z "$(docker ps -a --filter "name=omi-supabase" --format '{{.Names}}')" ]]; then pass "no project containers remain"; else fail "project containers remain"; fi
+if [[ -z "$(docker ps -a --filter "name=omi-memory-supabase" --format '{{.Names}}')" ]]; then pass "no project containers remain"; else fail "project containers remain"; fi
 if [[ -z "$(docker volume ls -q --filter "name=${PROJECT_NAME}")" ]]; then pass "no project volumes remain"; else fail "project volumes remain"; fi
 if [[ ! -f website/pocReviewUi/.env ]]; then pass "generated env removed"; else fail "generated env remains"; fi
 

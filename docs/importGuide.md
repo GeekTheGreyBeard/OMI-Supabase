@@ -1,8 +1,8 @@
-# OMI-Supabase Import Guide
+# OMI-Memory-Supabase Import Guide
 
 ## n8n
 
-Create a folder named `OMI-Supabase` in the target n8n instance and import the workflow JSON files from `workflows/`.
+Create a folder named `OMI-Memory-Supabase` in the target n8n instance and import the workflow JSON files from `workflows/`.
 
 Keep imported workflows inactive until credentials and webhook paths are reviewed.
 
@@ -27,7 +27,7 @@ Do not import or activate the old Review Action Router for public use. Review ac
 Apply:
 
 ```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/sql/001_omi_supabase_complete_setup.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/sql/001_omi_memory_supabase_complete_setup.sql
 ```
 
 The script creates schema `pmh`, review lifecycle tables, source systems, sync jobs, audit tables, audio/transcription metadata, approved memories, tag registry, views, and review function.
